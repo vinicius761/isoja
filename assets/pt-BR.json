@@ -1,0 +1,18 @@
+
+{
+    "title": "Gestão de Combustível",
+    "abastecimentos": "Abastecimentos",
+    "transferencias": "Transferências",
+    "data_inicial": "Data Inicial",
+    "data_final": "Data Final",
+    "id": "ID",
+    "data": "Data",
+    "posto": "Posto",
+    "litros": "Litros",
+    "status": "Status",
+    "pendente": "Pendente",
+    "enviado": "Enviado",
+    "tabela_transferencias": "Tabela de Transferências",
+    "dados_atualizados": "Dados Atualizados"
+
+  }
