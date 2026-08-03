@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isoja/Utils/Tema.dart';
+import 'package:isoja/Config/AppColors.config.dart';
 
 class CustomStepperComponent extends StatelessWidget {
   final int currentStep;
@@ -22,7 +22,7 @@ class CustomStepperComponent extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.light(
-          primary: Tema.primaryDark,
+          primary: AppColors.agroGreen,
           onPrimary: Colors.white,
         ),
       ),

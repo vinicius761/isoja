@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isoja/Channel/ZebraChannel.dart';
-import 'package:isoja/Components/ToastMessageComponent.dart';
+import 'package:isoja/Components/ToastMessage.component.dart';
 import 'package:isoja/Utils/EpcToSerialFormater.dart';
 import 'package:isoja/Utils/ZebraScannerService.dart';
 import 'package:path/path.dart';

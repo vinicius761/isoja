@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isoja/Utils/Tema.dart';
+import 'package:isoja/Config/AppColors.config.dart';
 
 class TimePickerFieldComponent extends StatelessWidget {
   final TextEditingController controller;
@@ -34,21 +34,18 @@ class TimePickerFieldComponent extends StatelessWidget {
             prefixIcon: Icon(Icons.access_time),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Tema.textSecondary,
-                width: 1.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Tema.textSecondary,
-                width: 1.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Tema.primaryDark, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.primaryBlue,
+                width: 2,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

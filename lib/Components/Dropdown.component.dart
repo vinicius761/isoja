@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:isoja/Utils/Tema.dart';
+import 'package:isoja/Config/AppColors.config.dart';
 
 class DropdownComponent extends StatelessWidget {
   final String label;
@@ -9,7 +9,7 @@ class DropdownComponent extends StatelessWidget {
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
   final String? hintText;
-  final bool enabled; // <<< Adicionado aqui para travar/destravar
+  final bool enabled;
 
   const DropdownComponent({
     super.key,
@@ -20,7 +20,7 @@ class DropdownComponent extends StatelessWidget {
     this.validator,
     this.prefixIcon,
     this.hintText,
-    this.enabled = true, // <<< Por padrão ele vem ativo (true)
+    this.enabled = true,
   });
 
   @override
@@ -48,7 +48,7 @@ class DropdownComponent extends StatelessWidget {
           hint: Text(
             hintText ?? 'Selecione uma opção',
             style: TextStyle(
-              color: enabled ? Tema.textSecondary : Colors.grey.shade400,
+              color: enabled ? AppColors.darkBlue : Colors.grey.shade400,
               fontSize: 16,
             ),
           ),
@@ -59,21 +59,18 @@ class DropdownComponent extends StatelessWidget {
             fillColor: enabled ? Colors.transparent : Colors.grey.shade100,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Tema.textSecondary,
-                width: 1.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Tema.textSecondary,
-                width: 1.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Tema.primaryDark, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.primaryBlue,
+                width: 2,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
