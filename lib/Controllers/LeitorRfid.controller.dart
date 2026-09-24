@@ -40,10 +40,21 @@ class LeitorRfidController extends GetxController {
   void _iniciarLeitor() {
     _conectarZebraScanner();
 
+    // 1. OBRIGATÓRIO: Liga a escuta do canal nativo no RfidService
+    rfidService.connect();
+
+    // 2. Redireciona o fluxo da stream para o ZebraScannerController
     rfidSubscription?.cancel();
-    rfidSubscription = rfidService.stream.listen((event) {
-      zebraController.onEventReceived(event);
-    }, onError: (error) {});
+    rfidSubscription = rfidService.stream.listen(
+      (event) {
+        if (event != null) {
+          zebraController.onEventReceived(event);
+        }
+      },
+      onError: (error) {
+        print("Erro na recepção do leitor: $error");
+      },
+    );
 
     zebraController.startListeningScanner();
   }
@@ -64,7 +75,7 @@ class LeitorRfidController extends GetxController {
     );
   }
 
-  /// Lógica idêntica ao handleConexao do HomeController
+  /// Lógica de conexão da pistola
   Future<void> handleConexao() async {
     isConnecting.value = true;
     isGlobalLoading.value = true;
@@ -100,14 +111,22 @@ class LeitorRfidController extends GetxController {
   void _tratarLeituraRfid(Map<String, dynamic> tagData) {
     final epc = tagData['codigo'] ?? tagData['tagId'] ?? tagData.toString();
     ultimaTagLida.value = "RFID: $epc";
-    zebraController.startListeningScanner();
   }
 
   void _tratarLeituraBarcode(Map<String, dynamic> barcodeData) {
-    final barcode =
-        barcodeData['codigo'] ?? barcodeData['tagId'] ?? barcodeData.toString();
+    // Trata tanto caso o retorno seja um Map ou venha como string/dinâmico
+    String barcode = '';
+
+    if (barcodeData.containsKey('codigo') && barcodeData['codigo'] != null) {
+      barcode = barcodeData['codigo'].toString();
+    } else if (barcodeData.containsKey('tagId') &&
+        barcodeData['tagId'] != null) {
+      barcode = barcodeData['tagId'].toString();
+    } else {
+      barcode = barcodeData.toString();
+    }
+
     ultimaTagLida.value = "Barcode: $barcode";
-    zebraController.startListeningScanner();
   }
 
   @override
