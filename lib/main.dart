@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isoja/Bindings/LeitorRfid.binding.dart';
 import 'package:isoja/Bindings/Login.binding.dart';
 import 'package:isoja/Bindings/Romaneio.binding.dart';
 import 'package:isoja/Bindings/Splash.binding.dart';
 import 'package:isoja/InitBinding.dart';
 import 'package:isoja/Screens/Home.screen.dart';
+import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
 import 'package:isoja/Screens/RomaneioComPesagem.dart';
 import 'package:isoja/Screens/Splash.screen.dart';
@@ -49,7 +51,7 @@ class ISoja extends StatelessWidget {
       title: 'ISoja',
       debugShowCheckedModeBanner: false,
       initialBinding: InitialBinding(),
-      initialRoute: '/splash',
+      initialRoute: '/rfid',
       getPages: [
         GetPage(name: '/', page: () => HomeScreen(), binding: LoginBinding()),
         GetPage(
@@ -66,6 +68,11 @@ class ISoja extends StatelessWidget {
           name: '/cadastro-producao',
           page: () => RomaneioComPesagemScreen(),
           binding: RomaneioBinding(),
+        ),
+        GetPage(
+          name: '/rfid',
+          page: () => LeitorRfidScreen(),
+          binding: LeitorRfidBinding(),
         ),
       ],
     );

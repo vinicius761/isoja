@@ -35,7 +35,7 @@ class VeiculoApi extends GetxController {
 
       return false;
     } catch (e) {
-      print("Erro no fluxo do getUser: $e");
+      print("Erro no fluxo do getVeiculos: $e");
       return false;
     }
   }

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:isoja/Controllers/Controller_config.dart';
+import 'package:isoja/Sync/EntidadeEntrega.api.dart';
 import 'package:isoja/Sync/Filial.api.dart';
 import 'package:isoja/Sync/Transportadora.api.dart';
 import 'package:isoja/Sync/UserFilial.api.dart';
@@ -14,9 +16,11 @@ class InitialBinding extends Bindings {
     Get.put<ApiProvider>(ApiProvider());
     Get.put<ApiProviderNest>(ApiProviderNest());
     Get.put<UserApi>(UserApi());
+    Get.put<ControllerConfig>(ControllerConfig());
     Get.put<UserFilialApi>(UserFilialApi());
     Get.put<FilialApi>(FilialApi());
     Get.put<VeiculoApi>(VeiculoApi());
     Get.put<TransportadoraApi>(TransportadoraApi());
+    Get.put<EntidadeEntregaApi>(EntidadeEntregaApi());
   }
 }

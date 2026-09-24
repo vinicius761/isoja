@@ -39,7 +39,7 @@ public class MainActivity extends FlutterActivity {
     private static final String EVENT_CHANNEL_RFID = "com.zebra.rfid/events";
     private static final String METHOD_CHANNEL_qr = "zebra_method_channel";
     private static final String EVENT_CHANNEL_rt = "zebra_data_channel";
-    private static final String DW_INTENT_ACTION = "com.example.isoja.cotton";
+    private static final String DW_INTENT_ACTION = "com.example.isoja";
 
     private EventChannel.EventSink eventSink;
     private RFIDHandlerFlutter rfidHandler;

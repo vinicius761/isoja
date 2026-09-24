@@ -37,7 +37,7 @@ class TransportadoraApi extends GetxController {
 
       return false;
     } catch (e) {
-      print("Erro no fluxo do getUser: $e");
+      print("Erro no fluxo do getTranspotadoras: $e");
       return false;
     }
   }

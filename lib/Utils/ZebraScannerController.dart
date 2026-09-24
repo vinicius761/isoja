@@ -5,12 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isoja/Channel/ZebraChannel.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
+import 'package:isoja/Controllers/Controller_config.dart';
+import 'package:isoja/Model/ConfigScanner.model.dart';
 import 'package:isoja/Utils/EpcToSerialFormater.dart';
 import 'package:isoja/Utils/ZebraScannerService.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-// IMPORT CORRETO: Removido o 'package:sqflite/sqflite.dart' que gerava o conflito
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ZebraScannerController {
@@ -23,6 +24,9 @@ class ZebraScannerController {
   bool isDialogOpen = false;
   List<dynamic> tags = [];
 
+  final ControllerConfig configController;
+  final String? Function(Configuracoes config)? selectPowerField;
+
   final int rfMode;
   final int tari;
   final String mode;
@@ -33,9 +37,11 @@ class ZebraScannerController {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   ZebraScannerController({
+    required this.configController,
     this.onRfidRead,
     this.onBarcodeRead,
     this.onConfigLoaded,
+    required this.selectPowerField,
     this.rfMode = 2,
     this.tari = 25,
     this.mode = "cadrolinho",
@@ -104,8 +110,22 @@ class ZebraScannerController {
       bool conectado = await ZebraChannel.isConnected();
 
       if (conectado) {
+        final Configuracoes? config =
+            await configController.buscarConfiguracao();
+
+        String? campoPotencia;
+        if (config != null && selectPowerField != null) {
+          campoPotencia = selectPowerField!(config);
+        }
+
+        print(
+          "Configuração principal carregada no construtor. Potência injetada por tela: $campoPotencia",
+        );
+
+        final valor = int.tryParse(campoPotencia ?? '') ?? defaultPowerIndex;
+
         await ZebraChannel.setRfConfig(
-          powerIndex: 299,
+          powerIndex: valor,
           rfMode: rfMode,
           tari: tari,
           mode: mode,
@@ -123,7 +143,7 @@ class ZebraScannerController {
 
   void startListeningScanner() {
     ZebraScannerService.start(
-      profileName: "cotton",
+      profileName: "SOJA",
       onTagFound: (melhorTag) {
         _processRfidTag(melhorTag);
       },
@@ -145,7 +165,6 @@ class ZebraScannerController {
 
         case 'barcode':
           isBarcode = true;
-          // CORREÇÃO: Extrai os dados puros do barcode de forma segura
           final barcodeData = map['tagId'] ?? map['barcodeData'] ?? '';
           final barcodeMap = _buildBarcodeMap(barcodeData);
           if (onBarcodeRead != null) onBarcodeRead!(barcodeMap);
@@ -154,28 +173,43 @@ class ZebraScannerController {
     }
   }
 
+  void stopListeningScanner() {
+    try {
+      // 1. Para o serviço do Zebra Scanner
+      ZebraScannerService.stop();
+    } catch (e) {
+      print("Erro ao parar ZebraScannerService: $e");
+    }
+  }
+
+  /// Limpa as referências para evitar vazamento de memória e chamadas indesejadas
+  void dispose() {
+    stopListeningScanner();
+    _database = null;
+  }
+
   Future<void> _processRfidTag(Map<String, dynamic> rawTag) async {
     final formattedTag = _buildTagMap(rawTag['tagId'], rawTag['rssi']);
     String codigoEtiqueta = epcToSerialFormater(formattedTag['tagId'] ?? '');
 
-    if (codigoEtiqueta.isNotEmpty) {
-      bool lonaValida = await _validarSequenciaLona(codigoEtiqueta);
+    // if (codigoEtiqueta.isNotEmpty) {
+    //   bool lonaValida = await _validarSequenciaLona(codigoEtiqueta);
 
-      if (lonaValida) {
-        isRfid = true;
-        tags = [formattedTag];
-        if (onRfidRead != null) onRfidRead!(formattedTag);
-      } else {
-        ToastMessageComponent.warning(
-          "Lona Inválida '${epcToSerialFormater(rawTag['tagId'])}' não permitida.",
-        );
-        print(
-          "Leitura rejeitada. Prefixo do código '$codigoEtiqueta' ausente na MARCA_LONA.",
-        );
-      }
-    } else {
-      ToastMessageComponent.warning("Código de etiqueta vazio.");
-    }
+    //   if (lonaValida) {
+    isRfid = true;
+    tags = [formattedTag];
+    // if (onRfidRead != null) onRfidRead!(formattedTag);
+    //   } else {
+    //     ToastMessageComponent.warning(
+    //       "Lona Inválida '${epcToSerialFormater(rawTag['tagId'])}' não permitida.",
+    //     );
+    //     print(
+    //       "Leitura rejeitada. Prefixo do código '$codigoEtiqueta' ausente na MARCA_LONA.",
+    //     );
+    //   }
+    // } else {
+    //   ToastMessageComponent.warning("Código de etiqueta vazio.");
+    // }
   }
 
   Map<String, dynamic> _buildTagMap(dynamic tagId, dynamic rssi) {

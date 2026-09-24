@@ -25,14 +25,14 @@ class PecasController extends GetxController {
   }
 
   void _inicializarScanner() {
-    _zebraScanner = ZebraScannerController(
-      onBarcodeRead: (barcodeData) {
-        _tratarLeituraBarcode(barcodeData);
-      },
-      onConfigLoaded: () {
-        print("Configurações do scanner Zebra carregadas com sucesso!");
-      },
-    );
+    // _zebraScanner = ZebraScannerController(
+    //   onBarcodeRead: (barcodeData) {
+    //     _tratarLeituraBarcode(barcodeData);
+    //   },
+    //   onConfigLoaded: () {
+    //     print("Configurações do scanner Zebra carregadas com sucesso!");
+    //   },
+    // );
 
     _zebraScanner.startListeningScanner();
   }

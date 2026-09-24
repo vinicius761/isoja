@@ -34,7 +34,7 @@ class UserFilialApi extends GetxController {
 
       return false;
     } catch (e) {
-      print("Erro no fluxo do getUser: $e");
+      print("Erro no fluxo do getUserFilial: $e");
       return false;
     }
   }

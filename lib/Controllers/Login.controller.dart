@@ -11,6 +11,7 @@ import 'package:isoja/Model/User.model.dart';
 import 'package:isoja/Model/UserFilial.model.dart';
 import 'package:isoja/Repository/User.repository.dart';
 import 'package:isoja/Repository/UserFilila.repository.dart';
+import 'package:isoja/Components/ToastMessage.component.dart';
 
 class LoginController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -77,50 +78,45 @@ class LoginController extends GetxController {
                 ),
               ),
             ),
-
             const Text(
               "Selecione uma Filial",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
-
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ...userFilial.map(
-                      (item) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "${item.codFilial} - ",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  Text(
-                                    item.filialDesc,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
+                      (item) => InkWell(
+                        // Torna a linha inteira clicável para selecionar a filial
+                        onTap: () {
+                          userFilialSelecionada.value = item;
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${item.codFilial} - ${item.filialDesc}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            Obx(
-                              () => RadioComponent<UserFilialModel?>(
-                                value: item,
-                                groupValue: userFilialSelecionada.value,
-                                activeColor: AppColors.agroGreen,
-                                onChanged: (UserFilialModel? valor) {
-                                  userFilialSelecionada.value = valor;
-                                },
+                              Obx(
+                                () => RadioComponent<UserFilialModel?>(
+                                  value: item,
+                                  groupValue: userFilialSelecionada.value,
+                                  activeColor: AppColors.agroGreen,
+                                  onChanged: (UserFilialModel? valor) {
+                                    userFilialSelecionada.value = valor;
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -128,7 +124,19 @@ class LoginController extends GetxController {
                 ),
               ),
             ),
-            ButtonComponent(text: 'Entrar', onPressed: () => Get.toNamed('/')),
+            ButtonComponent(
+              text: 'Entrar',
+              onPressed: () {
+                if (userFilialSelecionada.value == null) {
+                  ToastMessageComponent.info(
+                    'Por favor, selecione uma filial para continuar.',
+                  );
+                  return;
+                }
+
+                Get.toNamed('/');
+              },
+            ),
           ],
         ),
       ),

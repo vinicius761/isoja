@@ -17,7 +17,7 @@ class ZebraScannerService {
     required OnTagScanned onTagFound,
     required OnBarcodeScanned onBarcodeFound,
   }) {
-    // 1. Ativa o perfil desejado (ex: "cotton")
+    // 1. Ativa o perfil desejado (ex: "SOJA")
     // ZebraChannel.activateProfile(profileName);
 
     _subscription?.cancel(); // Evita múltiplas inscrições
