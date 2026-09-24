@@ -1,19 +1,10 @@
-import 'dart:io';
-import 'package:isoja/Model/ConfigBalanca.model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:isoja/Model/ConfigBalanca.model.dart';
+import 'package:isoja/Utils/DatabaseHelper.util.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
-import 'package:path/path.dart';
 
 class ControllerConfigImpressora extends GetxController {
-  static final FlutterSecureStorage _secureStorage =
-      const FlutterSecureStorage();
-
-  static Database? _database;
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController ipBalanca = TextEditingController();
@@ -22,16 +13,10 @@ class ControllerConfigImpressora extends GetxController {
 
   Rx<ConfiguracaoBalanca> configuracao = ConfiguracaoBalanca().obs;
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDB('db_alg.db');
-    return _database!;
-  }
-
   @override
   void onInit() {
     super.onInit();
-    database.then((_) => carregarDadosNosControllers());
+    carregarDadosNosControllers();
   }
 
   Future<void> carregarDadosNosControllers() async {
@@ -46,7 +31,7 @@ class ControllerConfigImpressora extends GetxController {
   Future<void> salvarConfiguracoes() async {
     loading.value = true;
     try {
-      final db = await database;
+      final db = await DatabaseHelper.instance.database;
 
       final config = ConfiguracaoBalanca(
         id: 1,
@@ -90,7 +75,6 @@ class ControllerConfigImpressora extends GetxController {
       loading.value = false;
     } catch (e) {
       loading.value = false;
-
       print("Erro ao salvar: $e");
 
       Get.snackbar(
@@ -105,7 +89,7 @@ class ControllerConfigImpressora extends GetxController {
 
   Future<ConfiguracaoBalanca?> buscarConfiguracao() async {
     try {
-      final db = await database;
+      final db = await DatabaseHelper.instance.database;
 
       final resultado = await db.query(
         'CONFIGURACAO_IMPRESSORA',
@@ -123,27 +107,5 @@ class ControllerConfigImpressora extends GetxController {
       print("Erro ao buscar config: $e");
       return null;
     }
-  }
-
-  Future<Database> _initDB(String dbName) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final path = join(dir.path, dbName);
-
-    final exists = await databaseExists(path);
-
-    if (!exists) {
-      final byteData = await rootBundle.load('assets/$dbName');
-      final buffer = byteData.buffer.asUint8List();
-      await File(path).writeAsBytes(buffer, flush: true);
-    }
-
-    String? senha = await _secureStorage.read(key: 'db_password');
-
-    if (senha == null) {
-      senha = DateTime.now().millisecondsSinceEpoch.toString();
-      await _secureStorage.write(key: 'db_password', value: senha);
-    }
-
-    return openDatabase(path, password: senha, version: 1);
   }
 }

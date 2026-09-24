@@ -1,18 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isoja/Channel/ZebraChannel.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
 import 'package:isoja/Controllers/Controller_config.dart';
 import 'package:isoja/Model/ConfigScanner.model.dart';
 import 'package:isoja/Utils/EpcToSerialFormater.dart';
 import 'package:isoja/Utils/ZebraScannerService.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ZebraScannerController {
   final Function(Map<String, dynamic> tag)? onRfidRead;
@@ -33,9 +25,6 @@ class ZebraScannerController {
   final int rssiMin;
   final int defaultPowerIndex;
 
-  Database? _database;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
   ZebraScannerController({
     required this.configController,
     this.onRfidRead,
@@ -51,43 +40,30 @@ class ZebraScannerController {
     _initHardwareConfig();
   }
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDB('db_alg.db');
-    return _database!;
-  }
+  // ===========================================================================
+  // MÉTODO PÚBLICO: VALIDAÇÃO COMPLETA DE SEQUÊNCIA DE LONA (DESATIVADO)
+  // ===========================================================================
 
-  Future<Database> _initDB(String dbName) async {
-    final documentsDir = await getApplicationDocumentsDirectory();
-    final path = join(documentsDir.path, dbName);
-
-    final exists = await databaseExists(path);
-
-    if (!exists) {
-      try {
-        final byteData = await rootBundle.load('assets/$dbName');
-        final buffer = byteData.buffer.asUint8List();
-        await File(path).writeAsBytes(buffer, flush: true);
-        print("Banco copiado do assets com sucesso para $path");
-      } catch (e) {
-        throw Exception("Erro ao copiar banco: $e");
-      }
-    } else {
-      print("Banco já existente no dispositivo.");
-    }
-
-    String? senha = await _secureStorage.read(key: 'db_password');
-    if (senha == null) {
-      senha = base64UrlEncode(utf8.encode(DateTime.now().toIso8601String()));
-      await _secureStorage.write(key: 'db_password', value: senha);
-    }
-
-    return await openDatabase(path, password: senha, version: 1);
-  }
-
-  Future<bool> _validarSequenciaLona(String codigoEtiqueta) async {
+  /// Valida se o [codigoEtiqueta] (ou a tag bruta) pertence a uma sequência permitida.
+  ///
+  /// **Atenção:** A validação via banco de dados foi comentada.
+  /// O método agora ignora a consulta na tabela MARCA_LONA e sempre retorna `true`.
+  Future<bool> validarSequenciaTag(String rawOrFormattedTag) async {
+    /* 
     try {
-      final db = await database;
+      if (rawOrFormattedTag.trim().isEmpty) {
+        print("Validação rejeitada: Código de etiqueta está vazio.");
+        return false;
+      }
+
+      final String codigoEtiqueta = epcToSerialFormater(rawOrFormattedTag);
+
+      if (codigoEtiqueta.isEmpty) {
+        print("Validação rejeitada: Formatação resultou em string vazia.");
+        return false;
+      }
+
+      final db = await DatabaseHelper.instance.database;
 
       final List<Map<String, dynamic>> resultado = await db.query(
         'MARCA_LONA',
@@ -95,15 +71,24 @@ class ZebraScannerController {
         whereArgs: [codigoEtiqueta],
       );
 
+      final bool isValid = resultado.isNotEmpty;
       print(
-        "Código testado: $codigoEtiqueta | Encontrado no banco: ${resultado.isNotEmpty}",
+        "Código Testado: '$codigoEtiqueta' (Original: '$rawOrFormattedTag') | Sequência Válida: $isValid",
       );
-      return resultado.isNotEmpty;
+
+      return isValid;
     } catch (e) {
-      print("Erro ao consultar tabela MARCA_LONA com LIKE: $e");
+      print("Erro ao consultar a tabela MARCA_LONA: $e");
       return false;
     }
+    */
+
+    return true;
   }
+
+  // ===========================================================================
+  // CONFIGURAÇÃO DO HARDWARE ZEBRA
+  // ===========================================================================
 
   Future<void> _initHardwareConfig() async {
     try {
@@ -122,10 +107,10 @@ class ZebraScannerController {
           "Configuração principal carregada no construtor. Potência injetada por tela: $campoPotencia",
         );
 
-        final valor = int.tryParse(campoPotencia ?? '') ?? defaultPowerIndex;
+        final valor = int.tryParse(campoPotencia ?? '299') ?? defaultPowerIndex;
 
         await ZebraChannel.setRfConfig(
-          powerIndex: valor,
+          powerIndex: 299,
           rfMode: rfMode,
           tari: tari,
           mode: mode,
@@ -141,9 +126,13 @@ class ZebraScannerController {
     }
   }
 
+  // ===========================================================================
+  // LISTENERS E EVENTOS DO SCANNER
+  // ===========================================================================
+
   void startListeningScanner() {
     ZebraScannerService.start(
-      profileName: "SOJA",
+      profileName: "isoja",
       onTagFound: (melhorTag) {
         _processRfidTag(melhorTag);
       },
@@ -175,41 +164,42 @@ class ZebraScannerController {
 
   void stopListeningScanner() {
     try {
-      // 1. Para o serviço do Zebra Scanner
       ZebraScannerService.stop();
     } catch (e) {
       print("Erro ao parar ZebraScannerService: $e");
     }
   }
 
-  /// Limpa as referências para evitar vazamento de memória e chamadas indesejadas
   void dispose() {
     stopListeningScanner();
-    _database = null;
   }
+
+  // ===========================================================================
+  // PROCESSAMENTO DE TAGS E MAPEAMENTO
+  // ===========================================================================
 
   Future<void> _processRfidTag(Map<String, dynamic> rawTag) async {
     final formattedTag = _buildTagMap(rawTag['tagId'], rawTag['rssi']);
-    String codigoEtiqueta = epcToSerialFormater(formattedTag['tagId'] ?? '');
+    final String tagRawId = rawTag['tagId'] ?? '';
 
-    // if (codigoEtiqueta.isNotEmpty) {
-    //   bool lonaValida = await _validarSequenciaLona(codigoEtiqueta);
+    if (tagRawId.isEmpty) {
+      ToastMessageComponent.warning("Código de etiqueta vazio.");
+      return;
+    }
 
-    //   if (lonaValida) {
-    isRfid = true;
-    tags = [formattedTag];
-    // if (onRfidRead != null) onRfidRead!(formattedTag);
-    //   } else {
-    //     ToastMessageComponent.warning(
-    //       "Lona Inválida '${epcToSerialFormater(rawTag['tagId'])}' não permitida.",
-    //     );
-    //     print(
-    //       "Leitura rejeitada. Prefixo do código '$codigoEtiqueta' ausente na MARCA_LONA.",
-    //     );
-    //   }
-    // } else {
-    //   ToastMessageComponent.warning("Código de etiqueta vazio.");
-    // }
+    final bool lonaValida = await validarSequenciaTag(tagRawId);
+
+    if (lonaValida) {
+      isRfid = true;
+      tags = [formattedTag];
+      if (onRfidRead != null) onRfidRead!(formattedTag);
+    } else {
+      final String formattedDisplay = epcToSerialFormater(tagRawId);
+      ToastMessageComponent.warning(
+        "Lona Inválida '$formattedDisplay' não permitida.",
+      );
+      print("Leitura de RFID rejeitada. Tag fora da sequência padrão.");
+    }
   }
 
   Map<String, dynamic> _buildTagMap(dynamic tagId, dynamic rssi) {
@@ -224,25 +214,27 @@ class ZebraScannerController {
   }
 
   Map<String, dynamic> _buildBarcodeMap(dynamic barcodeData) {
-    if (barcodeData['tagId'].length == 11) {
-      final res = {
-        'tagId': barcodeData['tagId'],
+    final String rawData =
+        barcodeData is Map
+            ? (barcodeData['tagId'] ?? '')
+            : barcodeData.toString();
+
+    if (rawData.length == 11) {
+      return {
+        'tagId': rawData,
         'rssi': '0',
         'status': '0',
-        'codigo': barcodeData['tagId'],
+        'codigo': rawData,
         'type': 'barcode',
       };
-
-      return res;
     }
 
-    final res = {
-      'tagId': barcodeData['tagId'],
+    return {
+      'tagId': rawData,
       'rssi': '0',
       'status': '0',
-      'codigo': epcToSerialFormater(barcodeData['tagId']),
+      'codigo': epcToSerialFormater(rawData),
       'type': 'barcode',
     };
-    return res;
   }
 }

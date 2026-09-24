@@ -4,9 +4,11 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:isoja/Components/ToastMessage.component.dart';
 import 'package:isoja/Controllers/Controller_config.dart';
 import 'package:isoja/Controllers/Rfid_Controller.dart';
 import 'package:isoja/Utils/ZebraScannerController.dart';
+import 'package:isoja/Utils/iniciarConexaoPistola.dart';
 
 class LeitorRfidController extends GetxController {
   late ZebraScannerController zebraController;
@@ -18,6 +20,15 @@ class LeitorRfidController extends GetxController {
   final ultimaTagLida = ''.obs;
   final isDialogOpen = false.obs;
 
+  // Variáveis reativas de conexão
+  final isConectado = false.obs;
+  final isConnecting = false.obs;
+  final isGlobalLoading = false.obs;
+
+  // Getters para compatibilidade com a View
+  RxBool get isConnected => isConectado;
+  RxBool get isConectando => isConnecting;
+
   List<Map<String, dynamic>> tags = [];
 
   @override
@@ -28,9 +39,8 @@ class LeitorRfidController extends GetxController {
 
   void _iniciarLeitor() {
     _conectarZebraScanner();
-    rfidSubscription?.cancel();
 
-    // Ouve a transmissão de eventos físicos do scanner
+    rfidSubscription?.cancel();
     rfidSubscription = rfidService.stream.listen((event) {
       zebraController.onEventReceived(event);
     }, onError: (error) {});
@@ -44,16 +54,42 @@ class LeitorRfidController extends GetxController {
       selectPowerField: (config) => config.cadroLinho,
       mode: "NOVA_TELA",
       onRfidRead: (tagFormatada) async {
-        // Callback acionado quando uma Tag RFID é lida
         tags = [tagFormatada];
         _tratarLeituraRfid(tagFormatada);
       },
       onBarcodeRead: (dadosBarcode) async {
-        // Callback acionado quando um Código de Barras é lido
         tags = [dadosBarcode];
         _tratarLeituraBarcode(dadosBarcode);
       },
     );
+  }
+
+  /// Lógica idêntica ao handleConexao do HomeController
+  Future<void> handleConexao() async {
+    isConnecting.value = true;
+    isGlobalLoading.value = true;
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      if (isConectado.value) {
+        await reconectaConexaoPistola();
+      } else {
+        await iniciarConexaoPistola();
+        isConectado.value = true;
+      }
+    } catch (e) {
+      isConectado.value = false;
+      ToastMessageComponent.info('Erro ao conectar: $e');
+    } finally {
+      await Future.delayed(const Duration(seconds: 3));
+      isConnecting.value = false;
+      isGlobalLoading.value = false;
+    }
+  }
+
+  void resetConexao() {
+    isConectado.value = false;
   }
 
   void setDialogOpen(bool value) {
@@ -61,31 +97,24 @@ class LeitorRfidController extends GetxController {
     zebraController.isDialogOpen = value;
   }
 
-  // Recebe os dados do RFID
   void _tratarLeituraRfid(Map<String, dynamic> tagData) {
-    // Exemplo: pega o código EPC lido
-    final epc = tagData['epc'] ?? tagData.toString();
+    final epc = tagData['codigo'] ?? tagData['tagId'] ?? tagData.toString();
     ultimaTagLida.value = "RFID: $epc";
-
-    print(epc);
-    // Reinicia escuta do leitor se necessário
     zebraController.startListeningScanner();
   }
 
-  // Recebe os dados do Código de Barras
   void _tratarLeituraBarcode(Map<String, dynamic> barcodeData) {
-    final barcode = barcodeData['barcode'] ?? barcodeData.toString();
+    final barcode =
+        barcodeData['codigo'] ?? barcodeData['tagId'] ?? barcodeData.toString();
     ultimaTagLida.value = "Barcode: $barcode";
-    print(barcode);
-
     zebraController.startListeningScanner();
   }
 
   @override
   void onClose() {
-    // Sempre encerre a escuta para não manter o leitor ocupado em background
     rfidSubscription?.cancel();
     rfidSubscription = null;
+    rfidService.disconnect();
     zebraController.stopListeningScanner();
     zebraController.dispose();
     super.onClose();
