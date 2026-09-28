@@ -3,14 +3,17 @@ import 'package:get/get.dart';
 import 'package:isoja/Components/DrawerItem.component.dart';
 import 'package:isoja/Components/DrawerSubItem.component.dart';
 import 'package:isoja/Config/AppColors.config.dart';
+import 'package:isoja/Controllers/Layout.controller.dart';
 import 'package:isoja/Controllers/Login.controller.dart';
 import 'package:isoja/Utils/CapitalizarNome.util.dart';
 
 class DrawerComponent extends StatelessWidget {
   DrawerComponent({super.key});
 
-  final controller = Get.find<LoginController>();
+  final loginController = Get.find<LoginController>();
+  final controller = Get.find<LayoutController>();
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -63,7 +66,7 @@ class DrawerComponent extends StatelessWidget {
                         ),
                         Text(
                           capitalizarNome(
-                            controller
+                            loginController
                                     .userFilialSelecionada
                                     .value
                                     ?.filialDesc ??
@@ -77,79 +80,52 @@ class DrawerComponent extends StatelessWidget {
                         ),
                         Text(
                           capitalizarNome(
-                            controller.userLogado.value?.nome ?? '',
+                            loginController.userLogado.value?.nome ?? '',
                           ),
                           style: const TextStyle(color: Colors.grey),
                         ),
-
                         const SizedBox(height: 14),
                         const Divider(color: AppColors.border),
                       ],
                     ),
                   ),
 
-                  DrawerItemComponent(
-                    icon: Icons.home_outlined,
-                    title: 'Início',
-                    onTap: () {
-                      Get.back();
-                      Get.toNamed('/');
-                    },
-                  ),
-                  DrawerItemComponent(
-                    icon: Icons.add_circle_outline,
-                    title: 'Cadastro',
-                    children: [
-                      DrawerSubItemComponent(
-                        icon: Icons.factory_outlined,
-                        title: 'Apontamento de Produção',
-                        onTap: () {
-                          Get.back();
-                          Get.toNamed('/cadastro-producao');
-                        },
-                      ),
-                    ],
-                  ),
-                  // DrawerItemComponent(
-                  //   icon: Icons.agriculture_outlined,
-                  //   title: 'Romaneio',
-                  //   onTap: () {
-                  //     Get.back();
-                  //     Get.toNamed('/lavouras');
-                  //   },
-                  // ),
-                  // DrawerItemComponent(
-                  //   icon: Icons.bar_chart_outlined,
-                  //   title: 'Relatórios',
-                  //   onTap: () {
-                  //     Get.back();
-                  //     Get.toNamed('/relatorios');
-                  //   },
-                  // ),
-                  // DrawerItemComponent(
-                  //   icon: Icons.sync,
-                  //   title: 'Sincronizar Dados',
-                  //   onTap: () {
-                  //     Get.back();
-                  //     Get.toNamed('/splash');
-                  //   },
-                  // ),
-                  // DrawerItemComponent(
-                  //   icon: Icons.settings_outlined,
-                  //   title: 'Configurações',
-                  //   onTap: () {
-                  //     Get.back();
-                  //     Get.toNamed('/configuracoes');
-                  //   },
-                  // ),
-                  // const Divider(color: AppColors.border),
-                  // DrawerItemComponent(
-                  //   icon: Icons.logout_outlined,
-                  //   title: 'Sair',
-                  //   iconColor: Colors.redAccent,
-                  //   textColor: Colors.redAccent,
-                  //   onTap: () => controller.sair(),
-                  // ),
+                  ...controller.drawerItems.map((item) {
+                    if (item.children != null && item.children!.isNotEmpty) {
+                      return DrawerItemComponent(
+                        icon: item.icon,
+                        title: item.title,
+                        children:
+                            item.children!.map((subItem) {
+                              return DrawerSubItemComponent(
+                                icon: subItem.icon,
+                                title: subItem.title,
+                                onTap:
+                                    subItem.onTap ??
+                                    () {
+                                      Get.back();
+                                      if (subItem.route != null) {
+                                        Get.toNamed(subItem.route!);
+                                      }
+                                    },
+                              );
+                            }).toList(),
+                      );
+                    }
+
+                    return DrawerItemComponent(
+                      icon: item.icon,
+                      title: item.title,
+                      onTap:
+                          item.onTap ??
+                          () {
+                            Get.back();
+                            if (item.route != null) {
+                              Get.toNamed(item.route!);
+                            }
+                          },
+                    );
+                  }),
                 ],
               ),
             ),

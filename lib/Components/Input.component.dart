@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import necessário para TextInputFormatter
 import 'package:isoja/Config/AppColors.config.dart';
 
 class InputComponent extends StatefulWidget {
@@ -11,6 +12,8 @@ class InputComponent extends StatefulWidget {
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final bool enabled;
+  final List<TextInputFormatter>?
+  inputFormatters; // Prop opcional adicionada aqui
 
   const InputComponent({
     super.key,
@@ -23,6 +26,7 @@ class InputComponent extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.enabled = true,
+    this.inputFormatters, // Adicionado no construtor
   });
 
   @override
@@ -51,6 +55,8 @@ class _InputComponentState extends State<InputComponent> {
           enabled: widget.enabled,
           controller: widget.controller,
           keyboardType: widget.keyboardType,
+          inputFormatters:
+              widget.inputFormatters, // Repassado para o TextFormField
           obscureText: widget.isPassword ? _obscureText : false,
           onChanged: widget.onChanged,
           validator: widget.validator,

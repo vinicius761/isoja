@@ -15,31 +15,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<PizzaData> dadosUmidade = [
-      PizzaData(
-        label: 'Ideal (13% - 14%)',
-        value: 65,
-        color: const Color(0xFF2E7D32),
-      ),
-      PizzaData(
-        label: 'Úmida (> 14%)',
-        value: 20,
-        color: const Color(0xFF0288D1),
-      ),
-      PizzaData(
-        label: 'Muito Seca (< 13%)',
-        value: 15,
-        color: const Color(0xFFE65100),
-      ),
-    ];
-
-    final List<ColunaData> dadosPerda = [
-      ColunaData(label: 'Pré-colheita', value: 1.2),
-      ColunaData(label: 'Plataforma', value: 3.5),
-      ColunaData(label: 'Mecanismo', value: 2.1),
-      ColunaData(label: 'Transporte', value: 0.8),
-    ];
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppbarComponent(title: 'Início'),

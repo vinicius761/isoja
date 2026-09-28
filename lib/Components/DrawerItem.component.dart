@@ -30,14 +30,10 @@ class DrawerItemComponent extends StatelessWidget {
         backgroundColor:
             backgroundColor ?? AppColors.primaryBlue.withOpacity(0.05),
         collapsedBackgroundColor: Colors.transparent,
-        leading: Icon(icon, color: iconColor, size: 28),
+        leading: Icon(icon, color: iconColor),
         title: Text(
           title,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 17,
-          ),
+          style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
         ),
         iconColor: iconColor,
         collapsedIconColor: iconColor,
@@ -47,14 +43,10 @@ class DrawerItemComponent extends StatelessWidget {
     }
 
     return ListTile(
-      leading: Icon(icon, color: iconColor, size: 28),
+      leading: Icon(icon, color: iconColor),
       title: Text(
         title,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 18,
-        ),
+        style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
       ),
       onTap: onTap,
     );

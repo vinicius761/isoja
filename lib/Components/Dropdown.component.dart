@@ -31,9 +31,9 @@ class DropdownComponent extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
+            color: enabled ? AppColors.darkBlue : AppColors.textSecondary,
             fontWeight: FontWeight.bold,
-            // Opcional: muda a cor do label se estiver desativado
-            color: enabled ? Colors.black : Colors.grey,
+            fontSize: 14,
           ),
         ),
         const SizedBox(height: 8),
@@ -42,44 +42,59 @@ class DropdownComponent extends StatelessWidget {
           menuMaxHeight: 300,
           value: value,
           items: items,
-          // Se enabled for false, o onChanged recebe null e trava o componente
           onChanged: enabled ? onChanged : null,
           validator: validator,
+
+          // 🔴 Cor de fundo da lista/opções que se abre:
+          dropdownColor: AppColors.lightGray, // Ou outra cor, ex: Colors.white
+          // 🔴 Arredondamento da caixa do menu suspenso:
+          borderRadius: BorderRadius.circular(12),
+
+          // 🔴 Força a abertura a alinhar-se com a parte inferior do campo:
+          alignment: Alignment.bottomLeft,
+
+          style: TextStyle(
+            color: enabled ? AppColors.darkBlue : AppColors.textSecondary,
+            fontSize: 16,
+          ),
           hint: Text(
             hintText ?? 'Selecione uma opção',
-            style: TextStyle(
-              color: enabled ? AppColors.darkBlue : Colors.grey.shade400,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
               fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
           decoration: InputDecoration(
             prefixIcon: prefixIcon,
-            // Cor de fundo leve para indicar que está travado
-            filled: !enabled,
-            fillColor: enabled ? Colors.transparent : Colors.grey.shade100,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+            filled: true,
+            fillColor: enabled ? AppColors.lightGray : Colors.grey.shade200,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.border, width: 1),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
                 color: AppColors.primaryBlue,
                 width: 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1),
             ),
-            // Adicionada a borda para quando o campo estiver desativado
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 2),
             ),
           ),
         ),

@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 
 import 'package:isoja/Components/Button.component.dart';
 import 'package:isoja/Components/Radio.component.dart';
-import 'package:isoja/Components/Toastr.component.dart';
 import 'package:isoja/Config/AppColors.config.dart';
 import 'package:isoja/Model/User.model.dart';
 import 'package:isoja/Model/UserFilial.model.dart';
@@ -43,7 +42,7 @@ class LoginController extends GetxController {
         await box.write('is_logged', true);
         return;
       }
-      ToastrComponent.show(message: 'Usuário ou senha não encontrado!');
+      ToastMessageComponent.info('Usuário ou senha não encontrado!');
     }
   }
 

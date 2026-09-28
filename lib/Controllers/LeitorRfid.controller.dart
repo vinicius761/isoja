@@ -40,8 +40,8 @@ class LeitorRfidController extends GetxController {
   void _iniciarLeitor() {
     _conectarZebraScanner();
 
-    // 1. OBRIGATÓRIO: Liga a escuta do canal nativo no RfidService
-    rfidService.connect();
+    // // 1. OBRIGATÓRIO: Liga a escuta do canal nativo no RfidService
+    // rfidService.connect();
 
     // 2. Redireciona o fluxo da stream para o ZebraScannerController
     rfidSubscription?.cancel();

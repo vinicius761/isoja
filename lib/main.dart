@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isoja/Bindings/CavaloMecanico.binding.dart';
 import 'package:isoja/Bindings/LeitorRfid.binding.dart';
 import 'package:isoja/Bindings/Login.binding.dart';
+import 'package:isoja/Bindings/Proprietario.binding.dart';
 import 'package:isoja/Bindings/Romaneio.binding.dart';
 import 'package:isoja/Bindings/Splash.binding.dart';
 import 'package:isoja/InitBinding.dart';
+import 'package:isoja/Screens/CadastroCavaloMecanico.screen.dart';
+import 'package:isoja/Screens/CadastroProprietario.screen.dart';
+import 'package:isoja/Screens/Configuracoes.screen.dart';
 import 'package:isoja/Screens/Home.screen.dart';
 import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
@@ -14,6 +19,7 @@ import 'package:isoja/Screens/RomaneioComPesagem.dart';
 import 'package:isoja/Screens/Splash.screen.dart';
 import 'package:isoja/Utils/DatabaseHelper.util.dart';
 import 'package:isoja/Utils/VerificaPermissoes.util.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +57,8 @@ class ISoja extends StatelessWidget {
       title: 'ISoja',
       debugShowCheckedModeBanner: false,
       initialBinding: InitialBinding(),
-      initialRoute: '/rfid',
+      theme: ThemeData(textTheme: GoogleFonts.robotoTextTheme()),
+      initialRoute: '/splash',
       getPages: [
         GetPage(name: '/', page: () => HomeScreen(), binding: LoginBinding()),
         GetPage(
@@ -73,6 +80,16 @@ class ISoja extends StatelessWidget {
           name: '/rfid',
           page: () => LeitorRfidScreen(),
           binding: LeitorRfidBinding(),
+        ),
+        GetPage(
+          name: '/cadastro-proprietario',
+          page: () => CadastroProprietarioScreen(),
+          binding: ProprietarioBinding(),
+        ),
+        GetPage(
+          name: '/cadastro-cavalo-mecanico',
+          page: () => CadastroCavaloMecanicoScreen(),
+          bindings: [CavaloMecanicoBinding(), ProprietarioBinding()],
         ),
       ],
     );
