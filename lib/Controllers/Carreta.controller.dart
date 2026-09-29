@@ -51,9 +51,7 @@ class CarretaController extends GetxController {
             idProprietario: int.parse(idProprietario.value),
           ),
         );
-        ToastMessageComponent.info(
-          "Cadastrada com sucesso ${res.body['modelo']}",
-        );
+        ToastMessageComponent.info("Cadastrada com sucesso.");
       } catch (e) {
         ToastMessageComponent.error(e.toString());
       }

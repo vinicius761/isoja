@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isoja/Bindings/Acoplamento.binding.dart';
 import 'package:isoja/Bindings/Carreta.binding.dart';
 import 'package:isoja/Bindings/CavaloMecanico.binding.dart';
 import 'package:isoja/Bindings/LeitorRfid.binding.dart';
@@ -98,11 +99,15 @@ class ISoja extends StatelessWidget {
           page: () => CadastroCarretaScreen(),
           bindings: [ProprietarioBinding(), CarretaBinding()],
         ),
-        // GetPage(
-        //   name: '/trela',
-        //   page: () => TrelaScreen(),
-        //   bindings: [CavaloMecanicoBinding(), CarretaBinding(),AcoplamentoBinding],
-        // ),
+        GetPage(
+          name: '/trela',
+          page: () => TrelaScreen(),
+          bindings: [
+            CavaloMecanicoBinding(),
+            CarretaBinding(),
+            AcoplamentoBinding(),
+          ],
+        ),
       ],
     );
   }

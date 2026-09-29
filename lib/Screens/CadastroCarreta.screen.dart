@@ -63,19 +63,15 @@ class CadastroCarretaScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Obx(() {
                   final String? valorSelecionado =
-                      controller.tiposCarreta.any(
-                            (item) => item == controller.idProprietario.value,
-                          )
-                          ? controller.idProprietario.value
+                      controller.tiposCarreta.contains(controller.tipo.value) &&
+                              controller.tipo.value.isNotEmpty
+                          ? controller.tipo.value
                           : null;
 
                   return DropdownComponent(
                     label: 'Tipo',
                     value: valorSelecionado,
-                    hintText:
-                        controller.tiposCarreta.isEmpty
-                            ? 'Carregando Tipo...'
-                            : 'Escolha o Tipo',
+                    hintText: 'Escolha o Tipo',
                     enabled: controller.tiposCarreta.isNotEmpty,
                     items:
                         controller.tiposCarreta.map<DropdownMenuItem<String>>((
@@ -86,9 +82,11 @@ class CadastroCarretaScreen extends StatelessWidget {
                             child: Text(item),
                           );
                         }).toList(),
-                    onChanged:
-                        (novoValor) =>
-                            controller.idProprietario.value = novoValor!,
+                    onChanged: (novoValor) {
+                      if (novoValor != null) {
+                        controller.tipo.value = novoValor;
+                      }
+                    },
                   );
                 }),
                 const SizedBox(height: 16),
@@ -115,8 +113,19 @@ class CadastroCarretaScreen extends StatelessWidget {
                   hintText: 'Digite a quantidade de eixo',
                   prefixIcon: Icons.commute_outlined,
                   controller: controller.eixos,
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   validator: (value) => validarCampoVazio(value, 'eixo'),
+                ),
+                const SizedBox(height: 16),
+                InputComponent(
+                  label: 'Capacida de Carga Kg',
+                  hintText: 'Digite a capacida de carga Kg',
+                  prefixIcon: Icons.commute_outlined,
+                  controller: controller.capacidadeCarga,
+                  keyboardType: TextInputType.number,
+                  validator:
+                      (value) =>
+                          validarCampoVazio(value, 'capacida de carga Kg'),
                 ),
                 const SizedBox(height: 16),
                 InputComponent(
