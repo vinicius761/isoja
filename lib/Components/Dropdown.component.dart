@@ -44,26 +44,15 @@ class DropdownComponent extends StatelessWidget {
           items: items,
           onChanged: enabled ? onChanged : null,
           validator: validator,
-
-          // 🔴 Cor de fundo da lista/opções que se abre:
-          dropdownColor: AppColors.lightGray, // Ou outra cor, ex: Colors.white
-          // 🔴 Arredondamento da caixa do menu suspenso:
           borderRadius: BorderRadius.circular(12),
-
-          // 🔴 Força a abertura a alinhar-se com a parte inferior do campo:
           alignment: Alignment.bottomLeft,
-
           style: TextStyle(
             color: enabled ? AppColors.darkBlue : AppColors.textSecondary,
             fontSize: 16,
           ),
           hint: Text(
             hintText ?? 'Selecione uma opção',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
           decoration: InputDecoration(
             prefixIcon: prefixIcon,

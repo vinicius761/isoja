@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:isoja/Channel/ZebraChannel.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
-import 'package:isoja/Controllers/Controller_config.dart';
+import 'package:isoja/Controllers/Config.controller.dart';
 import 'package:isoja/Model/ConfigScanner.model.dart';
 import 'package:isoja/Utils/EpcToSerialFormater.dart';
 import 'package:isoja/Utils/ZebraScannerService.dart';

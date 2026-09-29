@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:isoja/Components/ToastMessage.component.dart';
-import 'package:isoja/Controllers/Controller_Balanca.dart';
+import 'package:isoja/Controllers/Balanca.controller.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 

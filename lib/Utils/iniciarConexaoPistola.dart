@@ -1,6 +1,6 @@
 import 'package:isoja/Channel/ZebraChannel.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
-import 'package:isoja/Controllers/Rfid_Controller.dart';
+import 'package:isoja/Controllers/Rfid.controller.dart';
 
 final RfidService _rfidService = RfidService();
 

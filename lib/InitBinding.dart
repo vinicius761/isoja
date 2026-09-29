@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:isoja/Controllers/Controller_config.dart';
+import 'package:isoja/Controllers/Config.controller.dart';
 import 'package:isoja/Controllers/Layout.controller.dart';
 import 'package:isoja/Sync/Filial.api.dart';
 import 'package:isoja/Sync/UserFilial.api.dart';

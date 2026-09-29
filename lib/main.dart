@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:isoja/Bindings/Carreta.binding.dart';
 import 'package:isoja/Bindings/CavaloMecanico.binding.dart';
 import 'package:isoja/Bindings/LeitorRfid.binding.dart';
 import 'package:isoja/Bindings/Login.binding.dart';
@@ -9,9 +10,10 @@ import 'package:isoja/Bindings/Proprietario.binding.dart';
 import 'package:isoja/Bindings/Romaneio.binding.dart';
 import 'package:isoja/Bindings/Splash.binding.dart';
 import 'package:isoja/InitBinding.dart';
+import 'package:isoja/Screens/CadastroCarreta.screen.dart';
 import 'package:isoja/Screens/CadastroCavaloMecanico.screen.dart';
 import 'package:isoja/Screens/CadastroProprietario.screen.dart';
-import 'package:isoja/Screens/Configuracoes.screen.dart';
+import 'package:isoja/Screens/Trela.screen.dart';
 import 'package:isoja/Screens/Home.screen.dart';
 import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
@@ -91,6 +93,16 @@ class ISoja extends StatelessWidget {
           page: () => CadastroCavaloMecanicoScreen(),
           bindings: [CavaloMecanicoBinding(), ProprietarioBinding()],
         ),
+        GetPage(
+          name: '/cadastro-carreta',
+          page: () => CadastroCarretaScreen(),
+          bindings: [ProprietarioBinding(), CarretaBinding()],
+        ),
+        // GetPage(
+        //   name: '/trela',
+        //   page: () => TrelaScreen(),
+        //   bindings: [CavaloMecanicoBinding(), CarretaBinding(),AcoplamentoBinding],
+        // ),
       ],
     );
   }

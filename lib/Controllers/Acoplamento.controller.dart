@@ -5,7 +5,7 @@ import 'package:isoja/Api/CavaloMecanico.api.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
 import 'package:isoja/Model/CavaloMecanico.Model.dart';
 
-class CavaloMecanicoController extends GetxController {
+class AcoplamentoController extends GetxController {
   final api = CavaloMecanicoApi();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController placa = TextEditingController();
@@ -15,7 +15,7 @@ class CavaloMecanicoController extends GetxController {
   TextEditingController anoFabricacao = TextEditingController();
   RxString idProprietario = '1'.obs;
 
-  RxList<dynamic> cavalos = [].obs;
+  RxList<dynamic> proprietarios = [].obs;
 
   @override
   void onInit() async {
@@ -64,7 +64,7 @@ class CavaloMecanicoController extends GetxController {
               )
               .toList();
 
-      cavalos.value = listaProprietarios;
+      proprietarios.value = listaProprietarios;
 
       print("Total de proprietários carregados: ${listaProprietarios.length}");
     } catch (e) {
