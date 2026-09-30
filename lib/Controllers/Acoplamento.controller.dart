@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:isoja/Api/CavaloMecanico.api.dart';
+import 'package:isoja/Api/Acoplamento.api.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
+import 'package:isoja/Model/Acoplamento.model.dart';
 import 'package:isoja/Model/CavaloMecanico.Model.dart';
 
 class AcoplamentoController extends GetxController {
-  final api = CavaloMecanicoApi();
+  final api = AcoplamentoApi();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController placa = TextEditingController();
-  TextEditingController renavam = TextEditingController();
-  TextEditingController modelo = TextEditingController();
-  TextEditingController marca = TextEditingController();
-  TextEditingController anoFabricacao = TextEditingController();
-  RxString idProprietario = '1'.obs;
+
+  RxString idCarreta = ''.obs;
+  RxString idCavalo = ''.obs;
 
   RxList<dynamic> proprietarios = [].obs;
 
@@ -26,19 +26,14 @@ class AcoplamentoController extends GetxController {
   void salvar() async {
     if (formKey.currentState!.validate()) {
       try {
-        final res = await api.criarCavaloMecanico(
-          CavaloMecanico(
-            placa: placa.text,
-            renavam: renavam.text,
-            modelo: modelo.text,
-            marca: marca.text,
-            anoFabricacao: int.parse(anoFabricacao.text),
-            idProprietario: int.parse(idProprietario.value),
+        final res = await api.criarAcoplamento(
+          Acoplamento(
+            idCarreta: int.parse(idCarreta.value),
+            idCavalo: int.parse(idCavalo.value),
           ),
         );
-        ToastMessageComponent.info(
-          "Cadastrada com sucesso ${res.body['modelo']}",
-        );
+        ToastMessageComponent.info("Cadastrada com sucesso!");
+        Get.back();
       } catch (e) {
         ToastMessageComponent.error(e.toString());
       }
@@ -47,7 +42,7 @@ class AcoplamentoController extends GetxController {
 
   Future<void> buscar() async {
     try {
-      final res = await api.buscaCavaloMecanico();
+      final res = await api.buscaAcoplamento();
 
       if (res.status.hasError) {
         ToastMessageComponent.error(
@@ -59,9 +54,7 @@ class AcoplamentoController extends GetxController {
       final List<dynamic> bodyList = res.body;
       final listaProprietarios =
           bodyList
-              .map(
-                (item) => CavaloMecanico.fromJson(item as Map<String, dynamic>),
-              )
+              .map((item) => Acoplamento.fromJson(item as Map<String, dynamic>))
               .toList();
 
       proprietarios.value = listaProprietarios;

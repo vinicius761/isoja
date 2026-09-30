@@ -48,7 +48,7 @@ class LayoutController extends GetxController {
         DrawerMenuItem(
           icon: Icons.local_shipping_outlined, // ou Icons.rv_hookup_outlined
           title: 'Atrelar Carreta',
-          route: '/trela',
+          route: '/Acoplamento',
         ),
       ],
     ),

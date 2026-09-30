@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:isoja/Api/CavaloMecanico.api.dart';
@@ -13,9 +15,9 @@ class CavaloMecanicoController extends GetxController {
   TextEditingController modelo = TextEditingController();
   TextEditingController marca = TextEditingController();
   TextEditingController anoFabricacao = TextEditingController();
-  RxString idProprietario = '1'.obs;
+  RxString idProprietario = ''.obs;
 
-  RxList<dynamic> cavalos = [].obs;
+  RxList<CavaloMecanico> cavalos = <CavaloMecanico>[].obs;
 
   @override
   void onInit() async {
@@ -39,6 +41,7 @@ class CavaloMecanicoController extends GetxController {
         ToastMessageComponent.info(
           "Cadastrada com sucesso ${res.body['modelo']}",
         );
+        Get.back();
       } catch (e) {
         ToastMessageComponent.error(e.toString());
       }

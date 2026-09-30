@@ -14,7 +14,7 @@ import 'package:isoja/InitBinding.dart';
 import 'package:isoja/Screens/CadastroCarreta.screen.dart';
 import 'package:isoja/Screens/CadastroCavaloMecanico.screen.dart';
 import 'package:isoja/Screens/CadastroProprietario.screen.dart';
-import 'package:isoja/Screens/Trela.screen.dart';
+import 'package:isoja/Screens/Acoplamento.screen.dart';
 import 'package:isoja/Screens/Home.screen.dart';
 import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
@@ -100,8 +100,8 @@ class ISoja extends StatelessWidget {
           bindings: [ProprietarioBinding(), CarretaBinding()],
         ),
         GetPage(
-          name: '/trela',
-          page: () => TrelaScreen(),
+          name: '/Acoplamento',
+          page: () => AcoplamentoScreen(),
           bindings: [
             CavaloMecanicoBinding(),
             CarretaBinding(),

@@ -1,4 +1,5 @@
 class CavaloMecanico {
+  final int? id;
   final String placa;
   final String renavam;
   final String modelo;
@@ -7,6 +8,7 @@ class CavaloMecanico {
   final int idProprietario;
 
   CavaloMecanico({
+    this.id,
     required this.placa,
     required this.renavam,
     required this.modelo,
@@ -17,17 +19,19 @@ class CavaloMecanico {
 
   factory CavaloMecanico.fromJson(Map<String, dynamic> json) {
     return CavaloMecanico(
+      id: (json['id'] as num?)?.toInt(),
       placa: json['placa'] as String? ?? '',
       renavam: json['renavam'] as String? ?? '',
       modelo: json['modelo'] as String? ?? '',
       marca: json['marca'] as String? ?? '',
-      anoFabricacao: json['anoFabricacao'] as int? ?? 0,
-      idProprietario: json['idProprietario'] as int? ?? 0,
+      anoFabricacao: (json['anoFabricacao'] as num?)?.toInt() ?? 0,
+      idProprietario: (json['idProprietario'] as num?)?.toInt() ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'placa': placa,
       'renavam': renavam,
       'modelo': modelo,
@@ -38,6 +42,7 @@ class CavaloMecanico {
   }
 
   CavaloMecanico copyWith({
+    int? id,
     String? placa,
     String? renavam,
     String? modelo,
@@ -46,6 +51,7 @@ class CavaloMecanico {
     int? idProprietario,
   }) {
     return CavaloMecanico(
+      id: id ?? this.id,
       placa: placa ?? this.placa,
       renavam: renavam ?? this.renavam,
       modelo: modelo ?? this.modelo,

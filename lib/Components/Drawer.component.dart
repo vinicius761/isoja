@@ -37,7 +37,6 @@ class DrawerComponent extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Botão de fechar colado no topo
                         Align(
                           alignment: Alignment.topRight,
                           child: IconButton(
@@ -55,7 +54,7 @@ class DrawerComponent extends StatelessWidget {
                           height: 150,
                           child: ClipRect(
                             child: Transform.scale(
-                              scale: 1.8,
+                              scale: 2,
                               child: Image.asset(
                                 'assets/logo3.jpg',
                                 height: 230,
@@ -64,68 +63,81 @@ class DrawerComponent extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Text(
-                          capitalizarNome(
-                            loginController
-                                    .userFilialSelecionada
-                                    .value
-                                    ?.filialDesc ??
-                                '',
-                          ),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: AppColors.darkBlue,
+                        Transform.translate(
+                          offset: const Offset(0, -30),
+                          child: Column(
+                            children: [
+                              Text(
+                                capitalizarNome(
+                                  loginController
+                                          .userFilialSelecionada
+                                          .value
+                                          ?.filialDesc ??
+                                      '',
+                                ),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: AppColors.darkBlue,
+                                ),
+                              ),
+                              Text(
+                                capitalizarNome(
+                                  loginController.userLogado.value?.nome ?? '',
+                                ),
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                              const SizedBox(height: 14),
+                              const Divider(color: AppColors.border),
+                            ],
                           ),
                         ),
-                        Text(
-                          capitalizarNome(
-                            loginController.userLogado.value?.nome ?? '',
-                          ),
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(height: 14),
-                        const Divider(color: AppColors.border),
                       ],
                     ),
                   ),
-
-                  ...controller.drawerItems.map((item) {
-                    if (item.children != null && item.children!.isNotEmpty) {
-                      return DrawerItemComponent(
-                        icon: item.icon,
-                        title: item.title,
-                        children:
-                            item.children!.map((subItem) {
-                              return DrawerSubItemComponent(
-                                icon: subItem.icon,
-                                title: subItem.title,
-                                onTap:
-                                    subItem.onTap ??
-                                    () {
-                                      Get.back();
-                                      if (subItem.route != null) {
-                                        Get.toNamed(subItem.route!);
-                                      }
-                                    },
+                  Transform.translate(
+                    offset: const Offset(0, -30),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children:
+                          controller.drawerItems.map((item) {
+                            if (item.children != null &&
+                                item.children!.isNotEmpty) {
+                              return DrawerItemComponent(
+                                icon: item.icon,
+                                title: item.title,
+                                children:
+                                    item.children!.map((subItem) {
+                                      return DrawerSubItemComponent(
+                                        icon: subItem.icon,
+                                        title: subItem.title,
+                                        onTap:
+                                            subItem.onTap ??
+                                            () {
+                                              Get.back();
+                                              if (subItem.route != null) {
+                                                Get.toNamed(subItem.route!);
+                                              }
+                                            },
+                                      );
+                                    }).toList(),
                               );
-                            }).toList(),
-                      );
-                    }
-
-                    return DrawerItemComponent(
-                      icon: item.icon,
-                      title: item.title,
-                      onTap:
-                          item.onTap ??
-                          () {
-                            Get.back();
-                            if (item.route != null) {
-                              Get.toNamed(item.route!);
                             }
-                          },
-                    );
-                  }),
+                            return DrawerItemComponent(
+                              icon: item.icon,
+                              title: item.title,
+                              onTap:
+                                  item.onTap ??
+                                  () {
+                                    Get.back();
+                                    if (item.route != null) {
+                                      Get.toNamed(item.route!);
+                                    }
+                                  },
+                            );
+                          }).toList(),
+                    ),
+                  ),
                 ],
               ),
             ),

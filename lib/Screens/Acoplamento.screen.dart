@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:isoja/Components/Appbar.component.dart';
 import 'package:isoja/Components/Button.component.dart';
 import 'package:isoja/Config/AppColors.config.dart';
+import 'package:isoja/Controllers/Acoplamento.controller.dart';
 import 'package:isoja/Controllers/CavaloMecanico.controller.dart';
 import 'package:isoja/Components/Dropdown.component.dart';
 import 'package:get/get.dart';
 import 'package:isoja/Controllers/Carreta.controller.dart';
 
-class TrelaScreen extends StatelessWidget {
-  const TrelaScreen({super.key});
+class AcoplamentoScreen extends StatelessWidget {
+  const AcoplamentoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<CarretaController>();
+    final controller = Get.find<AcoplamentoController>();
     final cavaloController = Get.find<CavaloMecanicoController>();
     final carretaController = Get.find<CarretaController>();
 
@@ -29,14 +30,13 @@ class TrelaScreen extends StatelessWidget {
                 Obx(() {
                   final String? valorSelecionado =
                       cavaloController.cavalos.any(
-                            (item) =>
-                                item.id == controller.idProprietario.value,
+                            (item) => item.id == controller.idCarreta.value,
                           )
-                          ? controller.idProprietario.value
+                          ? controller.idCarreta.value
                           : null;
 
                   return DropdownComponent(
-                    label: 'Proprietário',
+                    label: 'Cavalo Mecânico',
                     value: valorSelecionado,
                     prefixIcon: Icon(
                       Icons.person_outline,
@@ -44,31 +44,35 @@ class TrelaScreen extends StatelessWidget {
                     ),
                     hintText:
                         cavaloController.cavalos.isEmpty
-                            ? 'Carregando proprietários...'
-                            : 'Escolha o proprietário',
+                            ? 'Carregando cavalo mecânico...'
+                            : 'Escolha o cavalo mecânico',
                     enabled: cavaloController.cavalos.isNotEmpty,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione um cavalo';
+                      }
+                      return null;
+                    },
                     items:
                         cavaloController.cavalos.map<DropdownMenuItem<String>>((
                           item,
                         ) {
                           return DropdownMenuItem<String>(
-                            value: item.id,
-                            child: Text(item.nome),
+                            value: item.id.toString(),
+                            child: Text("${item.modelo}-${item.placa}"),
                           );
                         }).toList(),
                     onChanged:
-                        (novoValor) =>
-                            controller.idProprietario.value = novoValor!,
+                        (novoValor) => controller.idCavalo.value = novoValor!,
                   );
                 }),
                 const SizedBox(height: 16),
                 Obx(() {
                   final String? valorSelecionado =
                       carretaController.carretas.any(
-                            (item) =>
-                                item.id == controller.idProprietario.value,
+                            (item) => item.id == controller.idCarreta.value,
                           )
-                          ? controller.idProprietario.value
+                          ? controller.idCarreta.value
                           : null;
 
                   return DropdownComponent(
@@ -79,17 +83,23 @@ class TrelaScreen extends StatelessWidget {
                       color: AppColors.agroGreen,
                     ),
                     hintText: 'Escolha o Carreta',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione um carreta';
+                      }
+                      return null;
+                    },
                     items:
                         carretaController.carretas
                             .map<DropdownMenuItem<String>>((item) {
                               return DropdownMenuItem<String>(
                                 value: item.id.toString(),
-                                child: Text(item.placa),
+                                child: Text("${item.tipo}-${item.placa}"),
                               );
                             })
                             .toList(),
                     onChanged:
-                        (novoValor) => controller.tipo.value = novoValor!,
+                        (novoValor) => controller.idCarreta.value = novoValor!,
                   );
                 }),
                 const SizedBox(height: 16),
