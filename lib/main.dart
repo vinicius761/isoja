@@ -82,7 +82,11 @@ class ISoja extends StatelessWidget {
           page: () => CadastroVeiculoScreen(),
           binding: VeiculoBinding(),
         ),
-        GetPage(name: '/veiculo', page: () => VeiculoScreen()),
+        GetPage(
+          name: '/veiculo',
+          page: () => VeiculoScreen(),
+          binding: VeiculoBinding(),
+        ),
       ],
     );
   }

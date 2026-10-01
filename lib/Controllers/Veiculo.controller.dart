@@ -56,6 +56,8 @@ class VeiculoController extends GetxController {
   final api = VeiculoApi();
   final controller = Get.find<LoginController>();
 
+  RxList<Veiculo> vaiculos = <Veiculo>[].obs;
+
   @override
   void onClose() {
     filialController.dispose();
@@ -86,12 +88,12 @@ class VeiculoController extends GetxController {
     super.onClose();
   }
 
-  // Altera o tipo de frota selecionado
+  buscaVeiculos() {}
+
   void setTipoFrota(String? val) {
     if (val != null) tipoFrota.value = val;
   }
 
-  // Converte a opção de frota num texto descritivo
   String get descricaoTipoFrota {
     switch (tipoFrota.value) {
       case '1':
@@ -179,6 +181,8 @@ class VeiculoController extends GetxController {
         ToastMessageComponent.success('Veiculo salvo com sucesso.');
         Get.back();
       }
-    } catch (e) {}
+    } catch (e) {
+      ToastMessageComponent.error('Erro ao cadastrar veículo.');
+    }
   }
 }
