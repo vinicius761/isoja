@@ -32,24 +32,29 @@ class LayoutController extends GetxController {
       children: [
         DrawerMenuItem(
           icon: Icons.person_outline,
-          title: 'Proprietário',
-          route: '/cadastro-proprietario',
+          title: 'Veículos',
+          route: '/veiculo',
         ),
-        DrawerMenuItem(
-          icon: Icons.local_shipping_outlined,
-          title: 'Cavalo Mecânico',
-          route: '/cadastro-cavalo-mecanico',
-        ),
-        DrawerMenuItem(
-          icon: Icons.fire_truck_outlined,
-          title: 'Carreta',
-          route: '/cadastro-carreta',
-        ),
-        DrawerMenuItem(
-          icon: Icons.local_shipping_outlined, // ou Icons.rv_hookup_outlined
-          title: 'Atrelar Carreta',
-          route: '/Acoplamento',
-        ),
+        // DrawerMenuItem(
+        //   icon: Icons.person_outline,
+        //   title: 'Proprietário',
+        //   route: '/cadastro-proprietario',
+        // ),
+        // DrawerMenuItem(
+        //   icon: Icons.local_shipping_outlined,
+        //   title: 'Cavalo Mecânico',
+        //   route: '/cadastro-cavalo-mecanico',
+        // ),
+        // DrawerMenuItem(
+        //   icon: Icons.fire_truck_outlined,
+        //   title: 'Carreta',
+        //   route: '/cadastro-carreta',
+        // ),
+        // DrawerMenuItem(
+        //   icon: Icons.local_shipping_outlined, // ou Icons.rv_hookup_outlined
+        //   title: 'Atrelar Carreta',
+        //   route: '/Acoplamento',
+        // ),
       ],
     ),
   ];

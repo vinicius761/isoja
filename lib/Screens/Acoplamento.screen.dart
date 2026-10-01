@@ -7,6 +7,7 @@ import 'package:isoja/Controllers/CavaloMecanico.controller.dart';
 import 'package:isoja/Components/Dropdown.component.dart';
 import 'package:get/get.dart';
 import 'package:isoja/Controllers/Carreta.controller.dart';
+import 'package:isoja/Components/Input.component.dart';
 
 class AcoplamentoScreen extends StatelessWidget {
   const AcoplamentoScreen({super.key});
@@ -19,7 +20,7 @@ class AcoplamentoScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppbarComponent(title: 'Cadastro de Carreta'),
+      appBar: const AppbarComponent(title: 'Acoplamento Carreta Cavalo'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -30,16 +31,17 @@ class AcoplamentoScreen extends StatelessWidget {
                 Obx(() {
                   final String? valorSelecionado =
                       cavaloController.cavalos.any(
-                            (item) => item.id == controller.idCarreta.value,
+                            (item) =>
+                                item.id.toString() == controller.idCavalo.value,
                           )
-                          ? controller.idCarreta.value
+                          ? controller.idCavalo.value
                           : null;
 
                   return DropdownComponent(
                     label: 'Cavalo Mecânico',
                     value: valorSelecionado,
                     prefixIcon: Icon(
-                      Icons.person_outline,
+                      Icons.local_shipping_outlined, // Icone para o Cavalo
                       color: AppColors.agroGreen,
                     ),
                     hintText:
@@ -70,7 +72,9 @@ class AcoplamentoScreen extends StatelessWidget {
                 Obx(() {
                   final String? valorSelecionado =
                       carretaController.carretas.any(
-                            (item) => item.id == controller.idCarreta.value,
+                            (item) =>
+                                item.id.toString() ==
+                                controller.idCarreta.value,
                           )
                           ? controller.idCarreta.value
                           : null;
@@ -79,13 +83,13 @@ class AcoplamentoScreen extends StatelessWidget {
                     label: 'Carreta',
                     value: valorSelecionado,
                     prefixIcon: Icon(
-                      Icons.category_outlined,
+                      Icons.rv_hookup, // Icone para a Carreta/Engate
                       color: AppColors.agroGreen,
                     ),
-                    hintText: 'Escolha o Carreta',
+                    hintText: 'Escolha a Carreta',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, selecione um carreta';
+                        return 'Por favor, selecione uma carreta';
                       }
                       return null;
                     },
@@ -102,6 +106,16 @@ class AcoplamentoScreen extends StatelessWidget {
                         (novoValor) => controller.idCarreta.value = novoValor!,
                   );
                 }),
+                const SizedBox(height: 16),
+                InputComponent(
+                  label: 'RFID',
+                  hintText: 'Digite a placa',
+                  prefixIcon: Icons.directions_car_outlined,
+                  keyboardType: TextInputType.text,
+                  controller: controller.RFID,
+                  onChanged: (value) => controller.RFIDRead.value = value,
+                  enabled: true,
+                ),
                 const SizedBox(height: 16),
                 ButtonComponent(
                   text: 'Salvar',

@@ -1,26 +1,72 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
 import 'package:isoja/Api/Acoplamento.api.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
 import 'package:isoja/Model/Acoplamento.model.dart';
-import 'package:isoja/Model/CavaloMecanico.Model.dart';
+import 'package:isoja/Controllers/Rfid.controller.dart';
 
 class AcoplamentoController extends GetxController {
   final api = AcoplamentoApi();
+  final rfidService = RfidService();
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   RxString idCarreta = ''.obs;
   RxString idCavalo = ''.obs;
+  TextEditingController RFID = TextEditingController();
+  RxString RFIDRead = ''.obs;
+
+  RxBool isRfidActive = false.obs;
 
   RxList<dynamic> proprietarios = [].obs;
+  StreamSubscription? _rfidSubscription;
 
   @override
   void onInit() async {
     await buscar();
+    iniciarRfid();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    pararRfid();
+    super.onClose();
+  }
+
+  void iniciarRfid() {
+    rfidService.connect();
+    isRfidActive.value = rfidService.isConnected;
+
+    _rfidSubscription = rfidService.stream.listen((event) {
+      _processarTagRfid(event);
+    });
+  }
+
+  void pararRfid() {
+    _rfidSubscription?.cancel();
+    rfidService.disconnect();
+    isRfidActive.value = false;
+  }
+
+  void _processarTagRfid(dynamic event) {
+    // if (event == null) return;
+
+    final String? tagRead = event['tag'] ?? event['epc'] ?? event['id'];
+
+    print("TESTE TESTE ${event}");
+
+    if (tagRead != null && tagRead.isNotEmpty) {
+      ToastMessageComponent.info("Tag lida: $tagRead");
+      RFID.text = event['tagId'];
+      // TODO: Insira aqui a sua lógica para associar a tag ao Cavalo ou à Carreta.
+      // Exemplo:
+      // final cavaloEncontrado = cavaloController.cavalos.firstWhereOrNull((c) => c.rfidTag == tagRead);
+      // if (cavaloEncontrado != null) {
+      //   idCavalo.value = cavaloEncontrado.id.toString();
+      // }
+    }
   }
 
   void salvar() async {
@@ -58,8 +104,6 @@ class AcoplamentoController extends GetxController {
               .toList();
 
       proprietarios.value = listaProprietarios;
-
-      print("Total de proprietários carregados: ${listaProprietarios.length}");
     } catch (e) {
       ToastMessageComponent.error(e.toString());
     }

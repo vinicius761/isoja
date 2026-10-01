@@ -26,6 +26,8 @@ class AppbarComponent extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       elevation: 0,
+      scrolledUnderElevation:
+          0, // Impede a alteração da cor de fundo ao fazer scroll
       backgroundColor: AppColors.lightGray,
       foregroundColor: Colors.black,
 

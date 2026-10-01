@@ -10,6 +10,7 @@ import 'package:isoja/Bindings/Login.binding.dart';
 import 'package:isoja/Bindings/Proprietario.binding.dart';
 import 'package:isoja/Bindings/Romaneio.binding.dart';
 import 'package:isoja/Bindings/Splash.binding.dart';
+import 'package:isoja/Bindings/Veiculo.binding.dart';
 import 'package:isoja/InitBinding.dart';
 import 'package:isoja/Screens/CadastroCarreta.screen.dart';
 import 'package:isoja/Screens/CadastroCavaloMecanico.screen.dart';
@@ -20,6 +21,7 @@ import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
 import 'package:isoja/Screens/RomaneioComPesagem.dart';
 import 'package:isoja/Screens/Splash.screen.dart';
+import 'package:isoja/Screens/Veiculo.screen.dart';
 import 'package:isoja/Utils/DatabaseHelper.util.dart';
 import 'package:isoja/Utils/VerificaPermissoes.util.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,7 +65,11 @@ class ISoja extends StatelessWidget {
       theme: ThemeData(textTheme: GoogleFonts.robotoTextTheme()),
       initialRoute: '/splash',
       getPages: [
-        GetPage(name: '/', page: () => HomeScreen(), binding: LoginBinding()),
+        GetPage(
+          name: '/',
+          page: () => HomeScreen(),
+          bindings: [LoginBinding(), LeitorRfidBinding()],
+        ),
         GetPage(
           name: '/splash',
           page: () => Splashscreen(),
@@ -83,6 +89,11 @@ class ISoja extends StatelessWidget {
           name: '/rfid',
           page: () => LeitorRfidScreen(),
           binding: LeitorRfidBinding(),
+        ),
+        GetPage(
+          name: '/veiculo',
+          page: () => VeiculoScreen(),
+          binding: VeiculoBinding(),
         ),
         GetPage(
           name: '/cadastro-proprietario',

@@ -34,7 +34,7 @@ class LeitorRfidController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _iniciarLeitor();
+    // _iniciarLeitor();
   }
 
   void _iniciarLeitor() {

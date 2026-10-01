@@ -48,10 +48,12 @@ class SelectComponent<T> extends StatelessWidget {
           value: value,
           isExpanded: isExpanded,
           validator: validator,
+          iconEnabledColor: AppColors.agroGreen,
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
             fillColor: AppColors.lightGray,
+            prefixIconColor: AppColors.agroGreen,
             prefixIcon: prefixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
