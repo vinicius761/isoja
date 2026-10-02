@@ -77,11 +77,11 @@ class Veiculo {
 
   Veiculo({
     this.id,
-    required this.filial,
-    required this.cod,
-    required this.descricao,
-    required this.placa,
-    required this.estpla,
+    this.filial = '',
+    this.cod = '',
+    this.descricao = '',
+    this.placa = '',
+    this.estpla = '',
     this.codmun = '',
     this.munpla = '',
     this.tag = '',
@@ -105,8 +105,8 @@ class Veiculo {
     this.comext = 0.0,
     this.anofab = '',
     this.anomod = '',
-    required this.chassi,
-    required this.renava,
+    this.chassi = '',
+    this.renava = '',
     this.marvei = '',
     this.corvei = '',
     this.tipvei = '',
@@ -155,7 +155,7 @@ class Veiculo {
 
   factory Veiculo.fromJson(Map<String, dynamic> json) {
     return Veiculo(
-      id: json['id'] ?? json['DA3_ID'],
+      id: json['da3Id'] ?? json['DA3_ID'],
       filial: json['filial'] ?? json['DA3_FILIAL'] ?? '',
       cod: json['cod'] ?? json['DA3_COD'] ?? '',
       descricao: json['descricao'] ?? json['DA3_DESC'] ?? '',

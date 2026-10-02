@@ -13,8 +13,7 @@ class VeiculoController extends GetxController {
   final formKeyStep4 = GlobalKey<FormState>();
   final formKeyStep5 = GlobalKey<FormState>();
 
-  // Controllers - Identificação e Localização
-  final filialController = TextEditingController(text: '01');
+  final filialController = TextEditingController();
   final codController = TextEditingController();
   final descricaoController = TextEditingController();
   final placaController = TextEditingController();
@@ -22,8 +21,6 @@ class VeiculoController extends GetxController {
   final codmunController = TextEditingController();
   final munplaController = TextEditingController();
   final tagController = TextEditingController();
-
-  // Controllers - Documentação
   final chassiController = TextEditingController();
   final renavamController = TextEditingController();
   final anoFabController = TextEditingController();
@@ -32,31 +29,26 @@ class VeiculoController extends GetxController {
   final corController = TextEditingController();
   final tipoVeiculoController = TextEditingController();
   final qtdEixosController = TextEditingController(text: '0');
-
-  // Controllers - Capacidades
   final capacidadeNominalController = TextEditingController();
   final capacidadeMaximaController = TextEditingController();
   final taraController = TextEditingController();
   final volumeMaximoController = TextEditingController();
-
-  // Controllers - Vínculos
   final motoristaController = TextEditingController();
   final fornecedorController = TextEditingController();
   final grupoVeiculoController = TextEditingController();
-
-  // Controllers - Seguro e Operacional
   final apoliceSeguroController = TextEditingController();
   final civController = TextEditingController();
-
-  // Estados Reativos
   var tipoFrota = '1'.obs; // 1 = Própria, 2 = Terceiro, 3 = Agregado
   var ativo = true.obs;
   var possuiRastreador = true.obs;
 
+  RxBool isLoading = false.obs;
+
   final api = VeiculoApi();
   final controller = Get.find<LoginController>();
 
-  RxList<Veiculo> vaiculos = <Veiculo>[].obs;
+  RxList<Veiculo> veiculos = <Veiculo>[].obs;
+  Rx<Veiculo> veiculo = Veiculo().obs;
 
   @override
   void onClose() {
@@ -88,7 +80,44 @@ class VeiculoController extends GetxController {
     super.onClose();
   }
 
-  buscaVeiculos() {}
+  @override
+  void onInit() {
+    buscaVeiculos();
+    super.onInit();
+  }
+
+  Future<void> buscaVeiculos() async {
+    try {
+      isLoading.value = true;
+      final res = await api.buscaVeiculo();
+
+      if (res.isOk && res.body != null) {
+        final List<Veiculo> listaNovosVeiculos =
+            (res.body as List).map((item) => Veiculo.fromJson(item)).toList();
+
+        veiculos.assignAll(listaNovosVeiculos);
+      }
+    } catch (e) {
+      ToastMessageComponent.info("Erro ao buscar veículos: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void buscaVeiculo(dynamic idProcurado) {
+    final encontrado = veiculos.firstWhereOrNull(
+      (v) => v.id == idProcurado || v.cod == idProcurado,
+    );
+
+    if (encontrado != null) {
+      veiculo.value = encontrado;
+
+      loadFromModel(encontrado);
+    } else {
+      veiculo.value = Veiculo();
+      ToastMessageComponent.info("Veículo não encontrado.");
+    }
+  }
 
   void setTipoFrota(String? val) {
     if (val != null) tipoFrota.value = val;
@@ -139,7 +168,6 @@ class VeiculoController extends GetxController {
     unitiz: 'TON',
   );
 
-  // Leitura do modelo ajustada
   void loadFromModel(Veiculo model) {
     filialController.text = model.filial;
     codController.text = model.cod;
@@ -179,6 +207,7 @@ class VeiculoController extends GetxController {
 
       if (response.statusCode == 201) {
         ToastMessageComponent.success('Veiculo salvo com sucesso.');
+        buscaVeiculos();
         Get.back();
       }
     } catch (e) {
