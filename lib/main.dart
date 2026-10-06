@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:isoja/Bindings/LeitorRfid.binding.dart';
 import 'package:isoja/Bindings/Login.binding.dart';
+import 'package:isoja/Bindings/Motorista.binding.dart';
 import 'package:isoja/Bindings/Splash.binding.dart';
 import 'package:isoja/Bindings/Veiculo.binding.dart';
 import 'package:isoja/InitBinding.dart';
 import 'package:isoja/Screens/Home.screen.dart';
 import 'package:isoja/Screens/LeitorRfid.screen.dart';
 import 'package:isoja/Screens/Login.screen.dart';
+import 'package:isoja/Screens/CadastroMotorista.screen.dart';
+import 'package:isoja/Screens/Motoristas.screen.dart';
 import 'package:isoja/Screens/Splash.screen.dart';
 import 'package:isoja/Screens/CadastroVeiculo.screen.dart';
 import 'package:isoja/Screens/Veiculo.screen.dart';
@@ -86,6 +89,16 @@ class ISoja extends StatelessWidget {
           name: '/veiculo',
           page: () => VeiculoScreen(),
           binding: VeiculoBinding(),
+        ),
+        GetPage(
+          name: '/cadastro-motorista',
+          page: () => CadastroMotoristaScreen(),
+          binding: MotoristaBinding(),
+        ),
+        GetPage(
+          name: '/motoristas',
+          page: () => MotoristasScreen(),
+          binding: MotoristaBinding(),
         ),
       ],
     );

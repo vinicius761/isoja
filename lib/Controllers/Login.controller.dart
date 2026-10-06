@@ -133,7 +133,7 @@ class LoginController extends GetxController {
                   return;
                 }
 
-                Get.toNamed('/');
+                Get.offAllNamed('/');
               },
             ),
           ],

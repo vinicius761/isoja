@@ -35,6 +35,11 @@ class LayoutController extends GetxController {
           title: 'Veículos',
           route: '/veiculo',
         ),
+        DrawerMenuItem(
+          icon: Icons.badge_outlined, // ou Icons.airline_seat_recline_extra
+          title: 'Motorista',
+          route: '/motoristas',
+        ),
         // DrawerMenuItem(
         //   icon: Icons.person_outline,
         //   title: 'Proprietário',
