@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:isoja/Sync/Filial.api.dart';
+import 'package:isoja/Sync/Talhao.dart';
 
 import 'package:isoja/Sync/User.api.dart';
 import 'package:isoja/Sync/UserFilial.api.dart';
@@ -21,7 +22,7 @@ class SplashController extends GetxController {
       final userApi = Get.find<UserApi>();
       final filialApi = Get.find<FilialApi>();
       final userFilialApi = Get.find<UserFilialApi>();
-      ;
+      final talhaoApi = Get.find<TalhaoApi>();
 
       loadingText.value = "Buscando usuário...";
       await userApi.getUser();
@@ -35,6 +36,11 @@ class SplashController extends GetxController {
 
       loadingText.value = "Buscando vínculos entre usuário e filial...";
       await userFilialApi.getUserFilial();
+      progress.value = 0.56;
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      loadingText.value = "Buscando talhao...";
+      await talhaoApi.getTalhao();
       progress.value = 1.0;
       await Future.delayed(const Duration(milliseconds: 1000));
 

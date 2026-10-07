@@ -6,6 +6,7 @@ import 'package:isoja/Controllers/Veiculo.controller.dart';
 class VeiculoBinding extends Bindings {
   @override
   void dependencies() {
+    Get.delete<VeiculoController>();
     Get.put<VeiculoController>(VeiculoController());
   }
 }

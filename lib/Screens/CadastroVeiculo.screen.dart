@@ -38,6 +38,7 @@ class CadastroVeiculoScreen extends StatelessWidget {
                 hintText: 'Ex: SCANIA R450',
                 controller: controller.descricaoController,
                 prefixIcon: Icons.directions_bus,
+                enabled: true,
                 validator:
                     (v) =>
                         v == null || v.isEmpty ? 'Informe a descrição' : null,
@@ -71,12 +72,6 @@ class CadastroVeiculoScreen extends StatelessWidget {
                 label: 'Município da Placa',
                 controller: controller.munplaController,
                 prefixIcon: Icons.location_city,
-              ),
-              const SizedBox(height: 12),
-              InputComponent(
-                label: 'Tag RFID (Pátio/Portaria)',
-                controller: controller.tagController,
-                prefixIcon: Icons.nfc,
               ),
             ],
           ),

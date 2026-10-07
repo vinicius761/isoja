@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:isoja/Controllers/Config.controller.dart';
 import 'package:isoja/Controllers/Layout.controller.dart';
 import 'package:isoja/Sync/Filial.api.dart';
+import 'package:isoja/Sync/Talhao.dart';
 import 'package:isoja/Sync/UserFilial.api.dart';
 import 'package:isoja/Utils/ApiJavaProvider.util.dart';
 import 'package:isoja/Utils/ApiProvider.util.dart';
@@ -18,5 +19,6 @@ class InitialBinding extends Bindings {
     Get.put<ControllerConfig>(ControllerConfig());
     Get.put<UserFilialApi>(UserFilialApi());
     Get.put<FilialApi>(FilialApi());
+    Get.put<TalhaoApi>(TalhaoApi());
   }
 }

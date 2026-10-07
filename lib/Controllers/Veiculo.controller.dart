@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isoja/Api/Veiculo.api.dart';
 import 'package:isoja/Components/ToastMessage.component.dart';
+import 'package:isoja/Controllers/Config.controller.dart';
 import 'package:isoja/Controllers/Login.controller.dart';
 import 'package:isoja/Model/Veiculo.model.dart';
+import 'package:isoja/Utils/ZebraScannerController.dart';
 
 class VeiculoController extends GetxController {
-  // Chaves para validação das etapas do formulário
   final formKeyStep1 = GlobalKey<FormState>();
   final formKeyStep2 = GlobalKey<FormState>();
   final formKeyStep3 = GlobalKey<FormState>();
@@ -38,6 +39,7 @@ class VeiculoController extends GetxController {
   final grupoVeiculoController = TextEditingController();
   final apoliceSeguroController = TextEditingController();
   final civController = TextEditingController();
+
   var tipoFrota = '1'.obs; // 1 = Própria, 2 = Terceiro, 3 = Agregado
   var ativo = true.obs;
   var possuiRastreador = true.obs;
@@ -47,11 +49,24 @@ class VeiculoController extends GetxController {
   final api = VeiculoApi();
   final controller = Get.find<LoginController>();
 
+  ZebraScannerController? zebraScannerController;
+
   RxList<Veiculo> veiculos = <Veiculo>[].obs;
   Rx<Veiculo> veiculo = Veiculo().obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    buscaVeiculos();
+    iniciarLeituraRfid();
+  }
+
+  @override
   void onClose() {
+    // Para o scanner ao sair da tela
+    zebraScannerController?.stopListeningScanner();
+
+    // Libera os Controllers
     filialController.dispose();
     codController.dispose();
     descricaoController.dispose();
@@ -77,13 +92,33 @@ class VeiculoController extends GetxController {
     grupoVeiculoController.dispose();
     apoliceSeguroController.dispose();
     civController.dispose();
+
     super.onClose();
   }
 
-  @override
-  void onInit() {
-    buscaVeiculos();
-    super.onInit();
+  void iniciarLeituraRfid() {
+    zebraScannerController = ZebraScannerController(
+      configController: Get.find<ControllerConfig>(),
+      selectPowerField: (config) => null,
+      onRfidRead: (tagData) {
+        final String codigoLido = tagData['codigo'] ?? tagData['tagId'] ?? '';
+        if (codigoLido.isNotEmpty) {
+          codController.text = codigoLido;
+
+          buscaVeiculo(codigoLido);
+        }
+      },
+      onBarcodeRead: (barcodeData) {
+        final String codigoLido =
+            barcodeData['codigo'] ?? barcodeData['tagId'] ?? '';
+        if (codigoLido.isNotEmpty) {
+          codController.text = codigoLido;
+          buscaVeiculo(codigoLido);
+        }
+      },
+    );
+
+    zebraScannerController?.startListeningScanner();
   }
 
   Future<void> buscaVeiculos() async {
@@ -111,7 +146,6 @@ class VeiculoController extends GetxController {
 
     if (encontrado != null) {
       veiculo.value = encontrado;
-
       loadFromModel(encontrado);
     } else {
       veiculo.value = Veiculo();
